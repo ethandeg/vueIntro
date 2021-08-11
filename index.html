@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>Flash Card App</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="app">
         <h1 v-text="deckName"></h1>
@@ -14,31 +16,45 @@
             Type something
             <input type="text" v-model="userInput">
         </div>
-       
-        <div class="card">
-            <h2 v-text="userInput === 'flipped' ? '' : cards[0].front"></h2>
-            <div v-text="userInput === 'flipped' ? cards[0].back : ''"></div>
-        </div>
 
-        <a :href="readMoreUrl">Read more</a>
+        <div @click="flipped = !flipped" class="card">
+            <h2 v-text="flipped ? '' : cards[index].front"></h2>
+            <div v-text="flipped ? cards[index].back : ''"></div>
+        </div>
+        <div class="navigation">
+            <button @click="move(-1)" type="button">&#8592;</button>
+            <button @click="move(1)" type="button">&#8594;</button>
+        </div>
+        <a v-bind:href="readMoreUrl" target="_blank">Read more</a>
     </div>
-    
+
     <script src="data.js"></script>
     <script src="https://unpkg.com/vue@3.0.7/dist/vue.global.js"></script>
     <script>
         const FlashCardApp = {
-            data(){
+            data() {
                 return {
                     deckName: 'Vue.js Fundamentals',
                     cards,
+                    index: 0,
                     flipped: false,
                     readMoreUrl: "https://foregroundleads.com",
                     userInput: "default"
+                };
+            },
+            methods: {
+                move(change) {
+                    if (this.cards[this.index + change]) {
+                        this.index += change;
+                        this.flipped = false;
+                    }
+
                 }
             }
-        
+
         };
         const app = Vue.createApp(FlashCardApp).mount('#app')
     </script>
 </body>
+
 </html>
